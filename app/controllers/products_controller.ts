@@ -2,28 +2,41 @@
 
 import { HttpContext } from '@adonisjs/core/http'
 import { createProducts } from '#validators/product'
-import Product from '#models/product'
+import { ProductService } from '#services/product_service'
+import { isNotEmpty } from '../utils.js'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class ProductsController {
-  public async getAll({ response }: HttpContext) {
-    const products = await Product.all()
-    return response.json({ data: products })
+  constructor(private productService: ProductService) {}
+
+  public async indexAll({ response }: HttpContext) {
+    const products = await this.productService.getAllProduct()
+    return response.json(products)
   }
 
-  public async getProduct({ response, params }: HttpContext) {
-    const product = await Product.find(params.productId)
-    return response.json({ data: product })
+  public async index({ response, params }: HttpContext) {
+    const product = await this.productService.getProduct(params.productId)
+    return response.ok(product)
   }
-  public async createProduct({ request }: HttpContext) {
+  public async create({ request, response }: HttpContext) {
     const newProductRequest = await request.validateUsing(createProducts)
     const newProduct = { ...newProductRequest }
-    return await Product.create(newProduct)
+    return response.ok(await this.productService.createProduct(newProduct))
   }
 
-  public async updateProduct({ request, response, params }: HttpContext) {
-    const product = await Product.find(params.productId)
+  public async update({ request, response, params }: HttpContext) {
+    const product = await this.productService.getProduct(params.productId)
     const updatedProductRequest = await request.all()
-    await product?.merge(updatedProductRequest).save()
-    return response.json({ data: product })
+    const updatedProduct = await this.productService.updateProduct(
+      isNotEmpty(product),
+      updatedProductRequest
+    )
+    return response.ok(updatedProduct)
+  }
+
+  public async delete({ response, params }: HttpContext) {
+    const product = await this.productService.getProduct(params.productId)
+    return response.ok(await this.productService.deleteProduct(isNotEmpty(product)))
   }
 }
