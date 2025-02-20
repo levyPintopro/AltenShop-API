@@ -8,7 +8,7 @@ export class ProductService {
   }
 
   public async getProduct(productId: number) {
-    const product = await Product.find(productId)
+    const product = await Product.findOrFail(productId)
     return product
   }
   public async createProduct(newProduct: Partial<ModelAttributes<Product>>) {
