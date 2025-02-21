@@ -5,27 +5,33 @@ import { createProducts } from '#validators/product'
 import { ProductService } from '#services/product_service'
 import { isNotEmpty } from '../utils.js'
 import { inject } from '@adonisjs/core'
+import { UserService } from '#services/user_service'
 
 @inject()
 export default class ProductsController {
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private userService: UserService
+  ) {}
 
   public async indexAll({ response }: HttpContext) {
     const products = await this.productService.getAllProduct()
-    return response.json(products)
+    return response.ok(products)
   }
 
   public async index({ response, params }: HttpContext) {
     const product = await this.productService.getProduct(params.productId)
     return response.ok(product)
   }
-  public async create({ request, response }: HttpContext) {
+  public async create({ auth, request, response }: HttpContext) {
+    await this.userService.isAdmin(auth.getUserOrFail().id)
     const newProductRequest = await request.validateUsing(createProducts)
     const newProduct = { ...newProductRequest }
     return response.ok(await this.productService.createProduct(newProduct))
   }
 
-  public async update({ request, response, params }: HttpContext) {
+  public async update({ auth, request, response, params }: HttpContext) {
+    await this.userService.isAdmin(auth.getUserOrFail().id)
     const product = await this.productService.getProduct(params.productId)
     const updatedProductRequest = await request.all()
     const updatedProduct = await this.productService.updateProduct(
@@ -35,7 +41,8 @@ export default class ProductsController {
     return response.ok(updatedProduct)
   }
 
-  public async delete({ response, params }: HttpContext) {
+  public async delete({ auth, response, params }: HttpContext) {
+    await this.userService.isAdmin(auth.getUserOrFail().id)
     const product = await this.productService.getProduct(params.productId)
     return response.ok(await this.productService.deleteProduct(isNotEmpty(product)))
   }
