@@ -1,5 +1,3 @@
-// import type { HttpContext } from '@adonisjs/core/http'
-
 import { HttpContext } from '@adonisjs/core/http'
 import { createProducts } from '#validators/product'
 import { ProductService } from '#services/product_service'
@@ -26,14 +24,14 @@ export default class ProductsController {
   public async create({ auth, request, response }: HttpContext) {
     await this.userService.isAdmin(auth.getUserOrFail().id)
     const newProductRequest = await request.validateUsing(createProducts)
-    const newProduct = { ...newProductRequest }
-    return response.ok(await this.productService.createProduct(newProduct))
+    const userCreated = await this.productService.createProduct(newProductRequest)
+    return response.ok(userCreated)
   }
 
   public async update({ auth, request, response, params }: HttpContext) {
     await this.userService.isAdmin(auth.getUserOrFail().id)
     const product = await this.productService.getProduct(params.productId)
-    const updatedProductRequest = await request.all()
+    const updatedProductRequest = await request.body()
     const updatedProduct = await this.productService.updateProduct(
       isNotEmpty(product),
       updatedProductRequest

@@ -12,6 +12,7 @@ import ProductsController from '#controllers/products_controller'
 import AuthController from '#controllers/auth_controller'
 import UsersController from '#controllers/users_controller'
 import { middleware } from '#start/kernel'
+import BasketsController from "#controllers/baskets_controller";
 
 router
   .group(() => {
@@ -22,5 +23,7 @@ router
     router.delete('/products/:productId', [ProductsController, 'delete']).use(middleware.auth())
     router.post('/token', [AuthController, 'create'])
     router.post('/account', [UsersController, 'create'])
+    router.get('/basket', [BasketsController, 'index']).use(middleware.auth())
+    router.post('/basket', [BasketsController, 'create']).use(middleware.auth())
   })
   .prefix('v1/api')

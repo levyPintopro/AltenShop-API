@@ -6,7 +6,7 @@ export default class Product extends BaseModel {
   declare id: number
 
   @column()
-  declare code: string
+  declare code: string | unknown
 
   @column()
   declare name: string
@@ -15,7 +15,7 @@ export default class Product extends BaseModel {
   declare description: string
 
   @column()
-  declare image: string
+  declare image: string | unknown
 
   @column()
   declare category: string
@@ -27,7 +27,7 @@ export default class Product extends BaseModel {
   declare quantity: number
 
   @column()
-  declare internalReference: string
+  declare internalReference: string | unknown
 
   @column()
   declare shellId: number
