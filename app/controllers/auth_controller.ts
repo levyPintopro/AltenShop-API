@@ -9,6 +9,7 @@ export default class AuthController {
     const { email, password } = await request.validateUsing(loginValidator)
     const user = await User.verifyCredentials(email, password)
     const token = await auth.use('jwt').generate(user)
-    return response.json(token)
+    return response.json({...token, email:user.email})
+
   }
 }
