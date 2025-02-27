@@ -1,4 +1,4 @@
-# 🛒 AltenShop-AP
+# 🛒 AltenShop-API
 
 AltenShop-AP est une API qui permet de gérer un shop en ligne avec un système d’authentification et de gestion des produits.  
 👨‍💼 **Administrateurs** : Il ajoute, modifie et supprime des produits.  
@@ -17,7 +17,7 @@ Ce projet est construit avec les technologies suivantes :
 ## 🛠 Installation et configuration
 
 1. **Configurer l’environnement**  
-   - Ajoutez le fichier `.env` reçu par mail à la racine du projet.  
+   - Ajoutez le fichier `.env` : [lien de téléchargement](https://we.tl/t-9mzL0O3BQp)
    - Modifiez les champs liés à la base de données PostgreSQL.
 
 2. **Installer les dépendances**
